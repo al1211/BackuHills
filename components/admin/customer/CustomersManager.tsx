@@ -24,7 +24,7 @@ export default function CustomersManager({ initial }: { initial: any [] }) {
 
   const summary = useMemo(() => {
     const buyers = rows.filter((r) => r.s.count > 0);
-    const since = Date.now() - 30 * 864e5;
+    const since = typeof window !== "undefined" ? Date.now() - 30 * 864e5 : 0;
     return {
       total: rows.length,
       fresh: rows.filter((r) => new Date(r.c.joined).getTime() >= since).length,
