@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { X, MapPin, ArrowRight } from 'lucide-react';
-import { FEATURED_SECTION, FEATURED_PROJECT } from '../../data/content';
-import { ProjectItem } from '@/app/types';
+import { FEATURED_PRODUCTS, } from '../../data/content';
+import { ProductItem } from '@/app/types';
 
 interface AllProjectsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectProject: (project: ProjectItem) => void;
+  onSelectProject: (project: ProductItem) => void;
 }
 
 export const AllProjectsModal: React.FC<AllProjectsModalProps> = ({
@@ -18,7 +18,7 @@ export const AllProjectsModal: React.FC<AllProjectsModalProps> = ({
 
   if (!isOpen) return null;
 
-  const allProjects = [FEATURED_PROJECT, ...SELECTED_PROJECTS];
+  const allProjects = [...FEATURED_PRODUCTS]
 
   const categories = ['All', 'Residential', 'Luxury Interior', 'Modern Architecture', 'Interior Design'];
 

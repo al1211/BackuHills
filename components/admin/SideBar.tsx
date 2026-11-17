@@ -36,7 +36,7 @@ const SideBar = () => {
 
   // Esc se band + drawer khula ho to peeche ka scroll band
   useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };

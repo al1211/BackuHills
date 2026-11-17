@@ -1,10 +1,10 @@
 import React from 'react';
 import { X, MapPin, Calendar, Maximize2, Check, ArrowRight } from 'lucide-react';
-import { ProjectItem } from '../app/types';
+import { ProductItem } from '@/app/types';
 import Image from 'next/image';
 
 interface ProjectModalProps {
-  project: ProjectItem | null;
+  project: ProductItem | null;
   onClose: () => void;
   onRequestConsultation: (projectName: string) => void;
 }

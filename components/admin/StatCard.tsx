@@ -1,8 +1,8 @@
 import { IconTrendingUp, IconTrendingDown } from "@tabler/icons-react";
 
 // change: number (jaise 11 ya -4). Poore-time numbers ke liye change mat do.
-export default function StatCard({ title, value, period = "Last 30 days", change, icon: Icon }) {
-  const up = change >= 0;
+export default function StatCard({ title, value, period = "Last 30 days", change, icon: Icon }: { title: string | number; value: string | number; period?: string; change?: number; icon: React.ComponentType<{ size?: number; stroke?: number }> }) {
+  const up = change! >= 0;
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between">

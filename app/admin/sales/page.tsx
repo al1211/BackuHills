@@ -8,7 +8,7 @@ import BarList from "@/components/admin/analytics/Barlist";
 import ProductSalesTable from "@/components/admin/Sales/ProductSalesTable";
 
 // ---- Dummy data: baad me yahan database / API se lao ----
-const mk = (labels, base) => labels.map((label, i) => ({
+const mk = (labels: string[], base: number) => labels.map((label, i) => ({
   label, income: base + ((i * 7919) % 5000) + (i % 3) * 1800, orders: 8 + ((i * 13) % 17),
 }));
 const trend = {
@@ -41,7 +41,7 @@ const refunds = 9996;
 export default function SalesPage() {
   const gross = products.reduce((s, p) => s + p.units * p.price, 0);
   const units = products.reduce((s, p) => s + p.units, 0);
-  const inr = (n) => "₹" + n.toLocaleString("en-IN");
+  const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 
   return (
     <div className="min-h-full bg-[#F7F9F8] p-4 sm:p-6">

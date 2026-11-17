@@ -12,21 +12,24 @@ const DEMO = { email: "admin@backumhills.com", password: "admin123" };
 export default function LoginPage() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
   const [formError, setFormError] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const set = (key) => (e) => {
+  const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [key]: e.target.value });
     setErrors({ ...errors, [key]: "" });
     setFormError("");
   };
 
-  const submit = async (e) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const errs = {};
+    const errs = { email: "", password: "" };
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) errs.email = "Sahi email likho.";
     if (!form.password) errs.password = "Password likho.";
     setErrors(errs);
@@ -50,7 +53,7 @@ export default function LoginPage() {
     setLoading(false);
   };
 
-  const field = (err) =>
+  const field = (err: string | undefined) =>
     `w-full rounded-xl border px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-4 ${
       err ? "border-red-300 focus:ring-red-100" : "border-gray-200 focus:border-[#5FE0BC] focus:ring-[#5FE0BC]/25"
     }`;

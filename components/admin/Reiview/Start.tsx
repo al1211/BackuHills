@@ -1,7 +1,7 @@
 import { IconStarFilled } from "@tabler/icons-react";
 
 // rating: 0-5 (decimal bhi chalega). Sirf dikhane ke liye.
-export default function Stars({ rating, size = 16 }) {
+export default function Stars({ rating, size = 16 }: { rating: number; size?: number }) {
   return (
     <span className="inline-flex gap-0.5" role="img" aria-label={`${rating} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((n) => (

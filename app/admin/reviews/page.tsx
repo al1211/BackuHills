@@ -1,16 +1,41 @@
-// Ise apne app/reviews/page.jsx me rakho. StatCard dashboard wala hi use hota hai.
-// Sidebar MENU me: { label: "Reviews", href: "/reviews", icon: IconStar }  (IconStar import karo)
-import ReviewsManager from "@/components/admin/Reiview/ReviewManger";
+// Sidebar MENU me: { label: "Reviews", href: "/reviews", icon: IconStar } (IconStar import karo)
+import ReviewsManager, { Review, ReviewStatus } from "@/components/admin/Reiview/ReviewManger";
 
 // ---- Dummy data: baad me Products aur Reviews database se lao ----
-const products = [
-  "Casual Belt - Black", "Casual Belt - Rich Brown", "Casual Belt - Elegant Tan",
-  "Casual Belt - Royal Blue", "Western Tooled Belt - Black", "Western Tooled Belt - Brown",
+const products: string[] = [
+  "Casual Belt - Black",
+  "Casual Belt - Rich Brown",
+  "Casual Belt - Elegant Tan",
+  "Casual Belt - Royal Blue",
+  "Western Tooled Belt - Black",
+  "Western Tooled Belt - Brown",
 ];
-const r = (id, product, customer, rating, title, body, date, status, verified = true, reply = "") =>
-  ({ id, product, customer, rating, title, body, date, status, verified, reply });
 
-const reviews = [
+const r = (
+  id: number,
+  product: string,
+  customer: string,
+  rating: number,
+  title: string,
+  body: string,
+  date: string,
+  status: ReviewStatus,
+  verified: boolean = true,
+  reply: string = ""
+): Review => ({
+  id,
+  product,
+  customer,
+  rating,
+  title,
+  body,
+  date,
+  status,
+  verified,
+  reply,
+});
+
+const reviews: Review[] = [
   r(1, "Western Tooled Belt - Black", "Aman Verma", 5, "Bahut shaandaar quality", "Leather asli hai aur buckle ka kaam bahut badhiya hai. Paise vasool.", "2026-11-14", "pending"),
   r(2, "Casual Belt - Black", "Rohit Sharma", 2, "Size thoda chhota", "Belt achhi hai par 36 order kiya aur fit 34 jaisa laga.", "2026-11-13", "pending"),
   r(3, "Casual Belt - Rich Brown", "Suresh Gupta", 5, "Mast belt", "Colour photo jaisa hi hai. Roz office me pehanta hoon.", "2026-11-10", "approved", true, "Shukriya Suresh ji! Aapka feedback humare liye bahut keemti hai."),

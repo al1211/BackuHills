@@ -1,8 +1,8 @@
 // Ise apne app/products/page.jsx me rakho.
 import ProductsManager from "@/components/admin/product/ProductManger";
-
+import type { Product } from "@/components/admin/product/ProductForm";
 // ---- Dummy data: baad me yahan database / API se products lao ----
-const products = [
+const products: Product[] = [
   { id: 1, name: "Casual Plain Belt - Black", sku: "BH-CAS-BLK", category: "Casual belts", price: 1999, mrp: 3599, stock: 50, status: "active", description: "100% genuine leather casual belt." },
   { id: 2, name: "Casual Plain Belt - Rich Brown", sku: "BH-CAS-BRN", category: "Casual belts", price: 1999, mrp: 3599, stock: 34, status: "active", description: "" },
   { id: 3, name: "Casual Plain Belt - Elegant Tan", sku: "BH-CAS-TAN", category: "Casual belts", price: 1999, mrp: 3599, stock: 9, status: "active", description: "" },

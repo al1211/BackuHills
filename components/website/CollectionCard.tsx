@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
-import type { CollectionItem } from '../data/content';
+import type { CollectionItem } from '@/app/types';
 
 interface CollectionCardProps {
   collection: CollectionItem;

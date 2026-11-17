@@ -1,5 +1,5 @@
 // items = [{ label, value }]; format = value ko dikhane ka tareeka
-export default function BarList({ title, items, format = (v) => v.toLocaleString("en-IN"), note }) {
+export default function BarList({ title, items, format = (v: number) => v.toLocaleString("en-IN"), note }: { title: string; items: { label: string; value: number }[]; format?: (v: number) => string; note?: string }) {
   const max = Math.max(...items.map((i) => i.value), 1);
   return (
     <section className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">

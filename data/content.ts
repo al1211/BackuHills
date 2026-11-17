@@ -157,6 +157,10 @@ export const FEATURED_PRODUCTS: ProductItem[] = [
     price: 1999,
     originalPrice: 3599,
     reviews: 0,
+    city: 'Jaipur',
+    location: 'Rajasthan, India',
+    area: 'Western India',
+    year: '2024',
     colors: ['Rich Brown', 'Black', 'Coffee Brown', 'Elegant Tan', 'Royal Blue', 'Royal Green'],
     description:
       'A clean, everyday genuine leather belt that goes with jeans, chinos and formals.',
@@ -169,6 +173,10 @@ export const FEATURED_PRODUCTS: ProductItem[] = [
     category: 'Western Collection',
     price: 2499,
     reviews: 11,
+    city: 'Jaipur', 
+    location: 'Rajasthan, India',
+    area: 'Western India',
+    year: '2024',
     description:
       'Veg-tanned buffalo leather with tooled detailing and an engraved silver buckle.',
     imageUrl: '/3.jpg',
@@ -180,6 +188,10 @@ export const FEATURED_PRODUCTS: ProductItem[] = [
     category: 'Western Collection',
     price: 2499,
     reviews: 12,
+    city: 'Jaipur',
+    location: 'Rajasthan, India',
+    area: 'Western India',
+    year: '2024',
     description:
       'Veg-tanned buffalo leather in rich brown with an antique engraved buckle.',
     imageUrl: '/4.jpg',
@@ -190,6 +202,12 @@ export const FEATURED_PRODUCTS: ProductItem[] = [
     title: 'Western Engraved Belt, Black',
     category: 'Western Collection',
     price: 2499,
+    city: 'Jaipur',
+
+    location: 'Rajasthan, India', 
+    area: 'Western India',  
+    year: '2024',
+
     reviews: 14,
     description:
       'Premium veg-tanned buffalo leather with an antique silver engraved buckle.',
@@ -546,3 +564,22 @@ export const GIFT_CARD_AMOUNTS: GiftCardAmount[] = [
   { id: 'a2000', value: 2000 },
   { id: 'a5000', value: 5000 },
 ];
+
+
+export const CATEGORIES = COLLECTIONS_DATA.map((item) => ({
+  name: item.title,
+  description: item.description,
+}));
+
+export const PRODUCTS = FEATURED_PRODUCTS.map((item) => ({
+  id: item.id,
+  name: item.title,
+  category: item.category,
+  description: item.description,
+  price: item.price,
+  compareAt: item.originalPrice,
+  image: item.imageUrl,
+  imageAlt: item.title,
+  badge: item.originalPrice ? 'Sale' : undefined,
+  imagePosition: '',
+}));

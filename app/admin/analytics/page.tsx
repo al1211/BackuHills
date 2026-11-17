@@ -7,7 +7,9 @@ import DonutChart from "@/components/admin/analytics/DountChart";
 import BarList from "@/components/admin/analytics/Barlist";
 
 // ---- Dummy data: baad me yahan API / database ka data lagao ----
-const mk = (labels, base) => labels.map((label, i) => ({
+
+
+const mk = (labels: string[], base: number) => labels.map((label, i) => ({
   label, income: base + ((i * 7919) % 5000) + (i % 3) * 1800, orders: 8 + ((i * 13) % 17),
 }));
 const sales = {

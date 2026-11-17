@@ -16,7 +16,8 @@ import {
   Truck,
   X,
 } from 'lucide-react';
-import { CATEGORIES, PRODUCTS } from '@/data/content';
+import { CATEGORIES, PRODUCTS } from '../../data/content';
+import { ProductItem } from '@/app/types';
 
 type CartItem = {
   productId: string;
@@ -52,7 +53,7 @@ export default function Storefront() {
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const cartTotal = cart.reduce((total, item) => {
-    const product = PRODUCTS.find((entry) => entry.id === item.productId);
+    const product = PRODUCTS.find((entry: unknown): entry is ProductItem => (entry as ProductItem).id === item.productId);
     return total + (product?.price ?? 0) * item.quantity;
   }, 0);
 

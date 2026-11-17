@@ -1,11 +1,11 @@
 "use client";
-import { useMemo, useState } from "react";
+import { JSX, useMemo, useState } from "react";
 import { IconDownload, IconArrowDown } from "@tabler/icons-react";
 
-const inr = (n) => "₹" + Math.round(n).toLocaleString("en-IN");
+const inr = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
 
 // rows = [{ name, category, price, units }]
-export default function ProductSalesTable({ rows }) {
+export default function ProductSalesTable({ rows }: { rows: any[] }) {
   const [sortBy, setSortBy] = useState("revenue"); // revenue | units
   const data = useMemo(() => {
     const withRev = rows.map((r) => ({ ...r, revenue: r.units * r.price }));
@@ -16,7 +16,7 @@ export default function ProductSalesTable({ rows }) {
   }, [rows, sortBy]);
 
   const exportCsv = () => {
-    const esc = (v) => `"${String(v).replace(/"/g, '""')}"`;
+    const esc = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`;
     const lines = [["Product", "Category", "Price", "Units sold", "Revenue"].join(",")]
       .concat(data.map((r) => [esc(r.name), esc(r.category), r.price, r.units, r.revenue].join(",")));
     const url = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" }));
@@ -25,7 +25,7 @@ export default function ProductSalesTable({ rows }) {
     URL.revokeObjectURL(url);
   };
 
-  const th = (key, label) => (
+  const th = (key: string, label: string): JSX.Element => (
     <th className="px-4 py-3 font-medium">
       <button onClick={() => setSortBy(key)} className={`inline-flex items-center gap-1 ${sortBy === key ? "text-[#0F7A5C]" : ""}`} aria-label={`${label} ke hisab se sort karo`}>
         {label} {sortBy === key && <IconArrowDown size={13} />}

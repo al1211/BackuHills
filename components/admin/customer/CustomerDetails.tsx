@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { IconX, IconBrandWhatsapp, IconPhone, IconMail, IconFlag } from "@tabler/icons-react";
 import { StatusBadge, inr, fmtDate } from "../orderManger/OrderDetail"; // Orders page wale exports
 
-export const initials = (n) => n.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
-export const Avatar = ({ name, size = "h-10 w-10 text-sm" }) => (
+export const initials = (n: string) => n.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+export const Avatar = ({ name, size = "h-10 w-10 text-sm" }: { name: string; size?: string }) => (
   <span className={`grid shrink-0 place-items-center rounded-full bg-[#E3F8F1] font-bold text-[#0F7A5C] ${size}`}>{initials(name)}</span>
 );
 
-export default function CustomerDetail({ customer: c, stats, onUpdate, onClose }) {
+export default function CustomerDetail({ customer: c, stats, onUpdate, onClose }: { customer: any; stats: any; onUpdate: any; onClose: any }) {
   const [notes, setNotes] = useState(c.notes || "");
 
   useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
@@ -52,7 +52,7 @@ export default function CustomerDetail({ customer: c, stats, onUpdate, onClose }
             <h3 className="font-semibold text-gray-900">Orders</h3>
             <ul className="mt-1 divide-y divide-gray-50">
               {c.orders.length === 0 && <li className="py-3 text-gray-400">Abhi koi order nahi.</li>}
-              {c.orders.map((o) => (
+              {c.orders.map((o: any) => (
                 <li key={o.id} className="flex items-center gap-3 py-2.5">
                   <span className="font-semibold text-gray-900">#{o.id}</span>
                   <span className="flex-1 text-gray-500">{fmtDate(o.date)}</span>

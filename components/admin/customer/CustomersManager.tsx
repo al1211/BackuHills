@@ -6,14 +6,14 @@ import CustomerDetail, { Avatar } from "./CustomerDetails";
 import { inr, fmtDate } from "../orderManger/OrderDetail";
 
 // Cancelled orders ginti me nahi aate
-const statsOf = (c) => {
-  const done = c.orders.filter((o) => o.status !== "Cancelled");
-  return { count: done.length, spent: done.reduce((s, o) => s + o.amount, 0), last: done.map((o) => o.date).sort().at(-1) || "" };
+const statsOf = (c: any) => {
+  const done = c.orders.filter((o: any) => o.status !== "Cancelled");
+  return { count: done.length, spent: done.reduce((s: number, o: any) => s + o.amount, 0), last: done.map((o: any   ) => o.date).sort().at(-1) || "" };
 };
 const FILTERS = [["all", "Sab"], ["repeat", "Repeat (2+ orders)"], ["new", "New (1 order)"], ["flagged", "Flagged"]];
 const SORTS = [["recent", "Latest order"], ["spent", "Sabse zyada kharch"], ["orders", "Sabse zyada orders"], ["name", "Naam (A-Z)"]];
 
-export default function CustomersManager({ initial }) {
+export default function CustomersManager({ initial }: { initial: any [] }) {
   const [customers, setCustomers] = useState(initial);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
@@ -47,7 +47,7 @@ export default function CustomersManager({ initial }) {
   }, [rows, q, filter, sort]);
 
   // TODO: yahan API call lagao (PATCH /api/customers/:id) — abhi sirf page ki memory me badalta hai
-  const update = (id, patch) => setCustomers((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+  const update = (id: string, patch: any): void => setCustomers((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
   const open = rows.find((r) => r.c.id === openId);
 
   const sel = "rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-[#5FE0BC] focus:outline-none";
@@ -132,7 +132,7 @@ export default function CustomersManager({ initial }) {
         </>
       )}
 
-      {open && <CustomerDetail key={open.c.id} customer={open.c} stats={open.s} onUpdate={(patch) => update(open.c.id, patch)} onClose={() => setOpenId(null)} />}
+      {open && <CustomerDetail key={open.c.id} customer={open.c} stats={open.s} onUpdate={(patch: any) => update(open.c.id, patch)} onClose={() => setOpenId(null)} />}
     </>
   );
 }

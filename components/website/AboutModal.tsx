@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Award, CheckCircle, Clock, ShieldCheck } from 'lucide-react';
-import { ABOUT_DATA } from '../data/content';
+import { ABOUT_DATA } from '../../data/content';
 
 interface AboutModalProps {
   isOpen: boolean;

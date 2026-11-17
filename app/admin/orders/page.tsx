@@ -1,8 +1,12 @@
-// Ise apne app/orders/page.jsx me rakho. StatCard dashboard wala hi use hota hai.
+// Ise app/(admin)/orders/page.tsx me rakho (ya jahan aapka orders page hai).
+// StatCard dashboard wala hi use hota hai.
 import OrdersManager from "@/components/admin/orderManger/OrderManger";
+import type { Order } from "@/components/admin/orderManger/OrderDetail";
 
 // ---- Dummy data: baad me yahan database / Shopify API se orders lao ----
-const orders = [
+// `Order[]` likhna zaroori hai: iske bina TypeScript "COD" aur "Pending" ko sirf string samajhta hai
+// aur Payment / OrderStatus wale type se mel nahi khaata.
+const orders: Order[] = [
   { id: 1045, customer: "Rohit Sharma", phone: "9876500011", city: "Meerut", address: "12, Shastri Nagar, Meerut, UP 250003", date: "2026-11-14", payment: "COD", status: "Pending", shipping: 0, items: [{ name: "Casual Belt - Black", qty: 1, price: 1999 }] },
   { id: 1044, customer: "Aman Verma", phone: "9876500022", city: "Lucknow", address: "45, Gomti Nagar, Lucknow, UP 226010", date: "2026-11-14", payment: "Prepaid", status: "Shipped", tracking: "SR48201934", shipping: 0, items: [{ name: "Western Tooled Belt - Black", qty: 1, price: 2499 }] },
   { id: 1043, customer: "Suresh Gupta", phone: "9876500033", city: "Kanpur", address: "7, Civil Lines, Kanpur, UP 208001", date: "2026-11-13", payment: "Prepaid", status: "Delivered", tracking: "SR48199120", shipping: 0, items: [{ name: "Casual Belt - Rich Brown", qty: 2, price: 1999 }] },

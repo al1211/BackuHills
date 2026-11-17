@@ -4,11 +4,12 @@ import StatCard from "@/components/admin/StatCard";
 import SalesChart from "@/components/admin/SalesChart";
 import RecentOrders from "@/components/admin/RecentOrder";
 import LowStock from "@/components/admin/LowStock";
+import type { Order } from "@/components/admin/RecentOrder";
 
 // ---- Dummy data: baad me yahan API / database ka data lagao ----
 const stats = { products: 48, orders: 1645, revenue: 826500, customers: 932 };
 
-const mk = (labels, base) => labels.map((label, i) => ({
+const mk = (labels: string[], base: number) => labels.map((label, i) => ({
   label, income: base + ((i * 7919) % 5000) + (i % 3) * 1800, orders: 8 + ((i * 13) % 17),
 }));
 const sales = {
@@ -17,21 +18,21 @@ const sales = {
   "12 months": mk(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 90000),
 };
 
-const orders = [
+const orders: Order[] = [
   { id: 1045, customer: "Rohit Sharma", date: "14 Nov", amount: 1999, status: "Pending" },
   { id: 1044, customer: "Aman Verma", date: "14 Nov", amount: 2499, status: "Shipped" },
   { id: 1043, customer: "Suresh Gupta", date: "13 Nov", amount: 3998, status: "Delivered" },
   { id: 1042, customer: "Imran Khan", date: "13 Nov", amount: 1999, status: "Delivered" },
   { id: 1041, customer: "Neha Singh", date: "12 Nov", amount: 2499, status: "Cancelled" },
 ];
-const lowStock = [
+const lowStock: { name: string; stock: number; max: number }[] = [
   { name: "Western Tooled Belt - Black", stock: 2, max: 20 },
   { name: "Casual Belt - Royal Blue", stock: 5, max: 50 },
   { name: "Casual Belt - Elegant Tan", stock: 9, max: 50 },
 ];
 
 export default function DashboardPage() {
-  const fmt = (n) => n.toLocaleString("en-IN");
+  const fmt = (n: number) => n.toLocaleString("en-IN");
   return (
     <div className="min-h-full bg-[#F7F9F8] p-6">
       <h1 className="text-2xl font-bold text-gray-900">Overview</h1>

@@ -3,7 +3,7 @@
 import CustomersManager from "@/components/admin/customer/CustomersManager";
 
 // ---- Dummy data: baad me yahan database / API se customers lao ----
-const o = (id, date, amount, status = "Delivered") => ({ id, date, amount, status });
+const o = (id: number, date: string, amount: number, status = "Delivered") => ({ id, date, amount, status });
 const customers = [
   { id: 1, name: "Rohit Sharma", phone: "9876500011", email: "rohit@example.com", city: "Meerut", joined: "2026-11-14", notes: "", flagged: false, orders: [o(1045, "2026-11-14", 1999, "Pending")] },
   { id: 2, name: "Aman Verma", phone: "9876500022", email: "", city: "Lucknow", joined: "2026-08-02", notes: "Western belts pasand hain.", flagged: false, orders: [o(1044, "2026-11-14", 2499, "Shipped"), o(912, "2026-08-02", 2499)] },

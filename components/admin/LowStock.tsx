@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 // items = [{ name, stock, max }]
-export default function LowStock({ items }) {
+export default function LowStock({ items }: { items: { name: string; stock: number; max: number }[] }) {
   return (
     <section className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between">

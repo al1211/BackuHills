@@ -1,10 +1,10 @@
 import React from 'react';
 import { ArrowRight, MapPin, Building, Maximize2 } from 'lucide-react';
-import { FEATURED_PROJECT } from '../data/content';
-import { ProjectItem } from '../types';
+import { FEATURED_PRODUCTS } from '../../data/content';
+import { ProductItem } from '@/app/types';
 
 interface FeaturedProjectProps {
-  onViewProject: (project: ProjectItem) => void;
+  onViewProject: (project: ProductItem) => void;
 }
 
 export const FeaturedProjectSection: React.FC<FeaturedProjectProps> = ({ onViewProject }) => {
@@ -28,7 +28,7 @@ export const FeaturedProjectSection: React.FC<FeaturedProjectProps> = ({ onViewP
             </div>
 
             <p className="text-sm sm:text-base text-[#a1a1aa] leading-relaxed font-light">
-              {FEATURED_PROJECT.description}
+              {FEATURED_PRODUCTS[0].description}
             </p>
 
             {/* Architectural Specifications List */}
@@ -38,7 +38,7 @@ export const FeaturedProjectSection: React.FC<FeaturedProjectProps> = ({ onViewP
                   <MapPin className="w-3 h-3" />
                 </div>
                 <span className="text-[#8e8e93] w-28 text-xs">Location:</span>
-                <span className="font-medium text-white">{FEATURED_PROJECT.location}</span>
+                <span className="font-medium text-white">{FEATURED_PRODUCTS[0].location}</span>
               </div>
 
               <div className="flex items-center gap-3 text-sm text-[#e0ded8]">
@@ -46,7 +46,7 @@ export const FeaturedProjectSection: React.FC<FeaturedProjectProps> = ({ onViewP
                   <Building className="w-3 h-3" />
                 </div>
                 <span className="text-[#8e8e93] w-28 text-xs">Project Type:</span>
-                <span className="font-medium text-white">{FEATURED_PROJECT.category}</span>
+                <span className="font-medium text-white">{FEATURED_PRODUCTS[0].category}</span>
               </div>
 
               <div className="flex items-center gap-3 text-sm text-[#e0ded8]">
@@ -54,14 +54,14 @@ export const FeaturedProjectSection: React.FC<FeaturedProjectProps> = ({ onViewP
                   <Maximize2 className="w-3 h-3" />
                 </div>
                 <span className="text-[#8e8e93] w-28 text-xs">Area:</span>
-                <span className="font-medium text-white">{FEATURED_PROJECT.area}</span>
+                <span className="font-medium text-white">{FEATURED_PRODUCTS[0].area}</span>
               </div>
             </div>
 
             {/* View Project Pill Button */}
             <div className="pt-4">
               <button
-                onClick={() => onViewProject(FEATURED_PROJECT)}
+                onClick={() => onViewProject(FEATURED_PRODUCTS[0])}
                 className="group inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-[#1b1b1f] hover:bg-[#25252b] text-white border border-white/15 hover:border-white/30 text-xs font-medium tracking-wide transition-all duration-200 cursor-pointer shadow-lg"
               >
                 <span>View Project</span>
@@ -75,16 +75,16 @@ export const FeaturedProjectSection: React.FC<FeaturedProjectProps> = ({ onViewP
           {/* Right Column: Wide Panoramic Villa Image */}
           <div className="lg:col-span-7">
             <div
-              onClick={() => onViewProject(FEATURED_PROJECT)}
+              onClick={() => onViewProject(FEATURED_PRODUCTS[0])}
               className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl group cursor-pointer"
             >
               <img
-                src={FEATURED_PROJECT.imageUrl}
+                src={FEATURED_PRODUCTS[0].imageUrl}
                 alt="Featured Modern Villa Residence by Aakriti Architects"
                 referrerPolicy="no-referrer"
-                className="w-full aspect-[16/10] sm:aspect-[16/9] object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full aspect-16/10 sm:aspect-video object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity" />
 
               {/* Subtle hover badge */}
               <div className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5">

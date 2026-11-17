@@ -1,7 +1,7 @@
 // items = [{ label, value, color }]  — pure SVG, koi library nahi
 const R = 15.9155; // circumference = 100, isliye value seedha % ban jaati hai
 
-export default function DonutChart({ title, items }) {
+export default function DonutChart({ title, items }: { title: string; items: { label: string; value: number; color: string }[] }) {
   const total = items.reduce((s, i) => s + i.value, 0) || 1;
   let offset = 25; // 12 baje se shuru
   return (
