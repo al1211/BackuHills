@@ -24,7 +24,7 @@ import {
   type StoreFilters,
   type StoreQuery,
   type ViewMode,
-} from '../../../app/(website)/lib/store';
+} from '../../../app/(website)/(store)/lib/store';
 import { CollectionStrip } from './CollectionStrip';
 import { FilterDrawer, FilterSidebar } from './FilterSlider';
 import { ProductCard } from './ProductCard';

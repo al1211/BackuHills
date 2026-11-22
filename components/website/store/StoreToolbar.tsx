@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
 import { SORT_OPTIONS, STORE_PAGE } from '../../../data/product';
-import type { SortKey, ViewMode } from '../../../app/(website)/lib/store';
+import type { SortKey, ViewMode } from '../../../app/(website)/(store)/lib/store';
 
 interface StoreToolbarProps {
   total: number;

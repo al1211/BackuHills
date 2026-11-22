@@ -10,7 +10,7 @@ import { ArrowUpRight, Heart, Minus, Plus, Star, X } from 'lucide-react';
 import { useModal } from '@/hooks/useModal';
 import { MAX_QTY } from '@/components/website/cart/CartProvider';
 import type { StoreProduct } from '@/app/types';
-import { STORE_URL, discountPercent, formatPrice } from '../../../app/(website)/lib/store';
+import { STORE_URL, discountPercent, formatPrice } from '../../../app/(website)/(store)/lib/store';
 
 interface QuickViewModalProps {
   product: StoreProduct;

@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, Barlow } from 'next/font/google';
 import '../globals.css';
-import { Header } from '@/components/website/Header';
-import { Footer } from '@/components/website/Footer';
-import WhatsAppButton from '@/components/website/Whatsapp';
+
 import { CartProvider } from '@/components/website/cart/CartProvider';
 
 // Headings font (used everywhere as var(--font-serif))
@@ -56,10 +54,7 @@ export default function RootLayout({
     <html lang="en" className={`${serif.variable} ${sans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-[#0d0d0f] text-[#ececeb] selection:bg-[#c5a880] selection:text-black">
         <CartProvider>
-        <Header />
-        <div className="flex-1">{children}</div>
-        <Footer />
-        <WhatsAppButton />
+       {children}
         </CartProvider>
           
       </body>

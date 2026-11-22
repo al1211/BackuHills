@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { StoreClient, StoreSkeleton } from '../../../components/website/store/StoreClient';
 import { PRODUCTS_DATA, STORE_PAGE } from '../../../data/product';
-import { STORE_URL } from '../lib/store';
+import { STORE_URL } from '../(store)/lib/store';
 
 // Google aur link share ke liye (layout.tsx isme " | Backum Hills" jod deta hai)
 export const metadata: Metadata = {

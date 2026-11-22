@@ -6,7 +6,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Eye, Heart, Star } from 'lucide-react';
 import type { StoreProduct } from '@/app/types';
-import { STORE_URL, discountPercent, formatPrice } from '../../../app/(website)/lib/store';
+import { STORE_URL, discountPercent, formatPrice } from '../../../app/(website)/(store)/lib/store';
 
 interface ProductCardProps {
   product: StoreProduct;

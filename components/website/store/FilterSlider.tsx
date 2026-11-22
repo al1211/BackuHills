@@ -7,7 +7,7 @@
 import React, { useEffect, useId, useRef } from 'react';
 import { ChevronDown, X } from 'lucide-react';
 import { useModal } from '@/hooks/useModal';
-import type { StoreFilters } from '../../../app/(website)/lib/store';
+import type { StoreFilters } from '../../../app/(website)/(store)/lib/store';
 import { PriceRangeSlider } from './PricRangeSlider';
 
 export interface CollectionOption {

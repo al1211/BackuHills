@@ -3,7 +3,7 @@
 // src/components/store/PriceRangeSlider.tsx
 // Dono taraf se khinchne wala price slider. Keyboard (arrow keys) se bhi chalta hai.
 import React, { useEffect, useRef, useState } from 'react';
-import { formatPrice } from '../../../app/(website)/lib/store';
+import { formatPrice } from '../../../app/(website)/(store)/lib/store';
 
 interface PriceRangeSliderProps {
   min: number; // slider ki sabse kam limit

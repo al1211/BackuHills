@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { MessageCircle, Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import { useModal } from '@/hooks/useModal';
 import { CONTACT_INFO } from '@/data/content';
-import { STORE_URL, formatPrice } from '../../../app/(website)/lib/store';
+import { STORE_URL, formatPrice } from '../../../app/(website)/(store)/lib/store';
 import { MAX_QTY, useCart } from './CartProvider';
 
 const FREE_SHIPPING_ABOVE = 550;
