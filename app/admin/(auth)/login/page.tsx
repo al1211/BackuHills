@@ -150,8 +150,9 @@ export default function LoginPage() {
             ))}
           </ul>
         </div>
-
-        <p className="relative text-sm text-emerald-50/50">© {new Date().getFullYear()} Backum Hills · Kanpur, Uttar Pradesh</p>
+         <p className="relative text-sm text-emerald-50/50">
+  © 2026 Backum Hills · Kanpur, Uttar Pradesh
+</p>
       </aside>
 
       {/* Right: login form */}
