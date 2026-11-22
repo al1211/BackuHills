@@ -5,9 +5,10 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { CartButton } from '@/components/website/cart/CartButton';
 import { Phone, ArrowRight, Menu, X } from 'lucide-react';
+import Link from 'next/link';
 
 interface HeaderProps {
-  /** Optional. When missing, the Shop Now button opens /collections. */
+ 
   onShopNow?: () => void;
 }
 
@@ -21,11 +22,12 @@ const CONTACT = {
 // Order matches the order of sections on the page
 const NAV_LINKS = [
   { name: 'Home', href: '#home' },
-  { name: 'Collections', href: '#services' },
+  { name: 'Collections', href: '/collections' },
   { name: 'Store', href: '/store' },
-  { name: 'About Us', href: '#about' },
-  { name: 'Reviews', href: '#testimonials' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'About Us', href: '/about-us' },
+  { name: 'Reviews', href: '/reviews' },
+  { name: 'Contact', href: '/contact-us' },
+  {name: 'Admin', href: '/admin/login' }
 ];
 
 // lucide-react no longer ships brand icons, so Instagram is an inline SVG
@@ -155,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
             {NAV_LINKS.map((link) => {
               const isActive = isLinkActive(link.href);
               return (
-                <a
+                <Link
                   key={link.name}
                   href={resolveHref(link.href)}
                   onClick={() => setActiveNav(link.href)}
@@ -167,7 +169,7 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
                   }`}
                 >
                   {link.name}
-                </a>
+                </Link>
               );
             })}
           </nav>

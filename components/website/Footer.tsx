@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { ArrowRight, ArrowUp, Loader2 } from 'lucide-react';
+import { ArrowRight, ArrowUp ,Loader2 } from 'lucide-react';
 import { FOOTER_DATA } from '../../data/content';
+import Link from 'next/link';
 
 interface FooterProps {
   onOpenPrivacy?: () => void;
@@ -196,7 +197,7 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="grid grid-cols-2 gap-10 border-t border-white/5 pb-10 pt-12 md:grid-cols-12">
           {/* Brand */}
           <div className="col-span-2 space-y-5 md:col-span-5">
-            <a
+            <Link
               href="#home"
               aria-label={`${FOOTER_DATA.brandName}, back to top`}
               className="inline-block"
@@ -208,7 +209,7 @@ export const Footer: React.FC<FooterProps> = ({
                 height={100}
                 className="h-10 w-auto"
               />
-            </a>
+            </Link>
             <p className="max-w-xs text-sm font-light leading-relaxed">
               {FOOTER_DATA.about}
             </p>
