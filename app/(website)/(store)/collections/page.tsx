@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, ChevronRight } from 'lucide-react';
-import { CollectionCard } from "../../../components/website/CollectionCard";
-import { COLLECTIONS_DATA, COLLECTIONS_PAGE } from '../../../data/content';
+import { CollectionCard } from "../../../../components/website/CollectionCard";
+import { COLLECTIONS_DATA, COLLECTIONS_PAGE } from '../../../../data/content';
 
 // This text is used by Google and when the page is shared
 export const metadata: Metadata = {
