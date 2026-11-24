@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { GiftCardSection } from '../../../components/website/GiftCard';
+import { GiftCardSection } from '../../../../components/website/GiftCard';
 
 export const metadata: Metadata = {
   title: 'Gift Cards', // layout adds " | Backum Hills"

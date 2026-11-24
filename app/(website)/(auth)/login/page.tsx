@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loginCustomer, getAuthenticatedUser } from "@/services/auth.services";
 import { IconAlertCircle, IconEye, IconEyeOff, IconLock, IconMail, IconMapPin, IconTruckDelivery, IconBolt } from "@tabler/icons-react";
 import { useAuthStore } from "@/store/auth.store";
+
 
 const SHOW_DEMO = process.env.NODE_ENV !== "production";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,6 +59,7 @@ export default function LoginPage() {
   const [show, setShow] = useState(false);
   const [capsOn, setCapsOn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
   const setAuth = useAuthStore((state) => state.setAuth);
 
   const set = (k: "email" | "password") => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,6 +68,9 @@ export default function LoginPage() {
     setFormError("");
   };
 
+   useEffect(() => {
+  setCurrentYear(new Date().getFullYear());
+}, []);
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (loading) return;
@@ -127,7 +132,9 @@ export default function LoginPage() {
             ))}
           </ul>
         </div>
-        <p className="relative text-sm text-emerald-50/50">© {new Date().getFullYear()} Backum Hills · Kanpur</p>
+        <p className="relative text-sm text-emerald-50/50">
+  © {currentYear ?? "2026"} Backum Hills · Kanpur
+</p>
       </aside>
 
       <section className="flex items-center justify-center bg-[#F7F9F8] px-5 py-10 sm:px-10">

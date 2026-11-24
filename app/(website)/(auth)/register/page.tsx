@@ -1,6 +1,6 @@
 "use client";
 // Ek hi file me poora customer register. Ise app/account/register/page.tsx me rakho.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { registerCustomer } from "@/services/auth.services";
 import Link from "next/link";
 import { IconAlertCircle, IconCircleCheck, IconEye, IconEyeOff, IconLock, IconMail, IconPhone, IconUser, IconMapPin, IconTruckDelivery, IconBolt } from "@tabler/icons-react";
@@ -79,12 +79,16 @@ export default function RegisterPage() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) => {
     setForm((f) => ({ ...f, [k]: v }));
     setErrors((p) => ({ ...p, [k]: undefined }));
     setFormError("");
   };
+   useEffect(() => {
+  setCurrentYear(new Date().getFullYear()); 
+}, []);
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -132,7 +136,7 @@ export default function RegisterPage() {
             ))}
           </ul>
         </div>
-        <p className="relative text-sm text-emerald-50/50">© {new Date().getFullYear()} Backum Hills · Kanpur</p>
+        <p className="relative text-sm text-emerald-50/50">© {currentYear ?? "2026"} Backum Hills · Kanpur</p>
       </aside>
 
       <section className="flex items-center justify-center bg-[#F7F9F8] px-5 py-10 sm:px-10">
