@@ -5,7 +5,7 @@ import { IconX } from "@tabler/icons-react";
  
 // Ek hi jagah type define hai; CategoriesManager yahin se import karta hai.
 export type Category = {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   description: string;
@@ -16,7 +16,7 @@ export type Category = {
 export type CategoryDraft = Partial<Category>; // naye category me id/products nahi hote
  
 type Draft = {
-  id?: number;
+  id?: string;
   products?: number;
   name: string;
   slug: string;

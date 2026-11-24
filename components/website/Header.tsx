@@ -6,9 +6,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { CartButton } from '@/components/website/cart/CartButton';
 import { Phone, ArrowRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import { useAuthStore } from "@/store/auth.store";
+import { logoutCustomer } from "@/services/auth.services";
 
 interface HeaderProps {
- 
+
   onShopNow?: () => void;
 }
 
@@ -27,7 +29,7 @@ const NAV_LINKS = [
   { name: 'About Us', href: '/about-us' },
   { name: 'Reviews', href: '/reviews' },
   { name: 'Contact', href: '/contact-us' },
-  {name: 'Admin', href: '/admin/login' }
+  { name: 'Admin', href: '/admin/login' }
 ];
 
 // lucide-react no longer ships brand icons, so Instagram is an inline SVG
@@ -49,6 +51,7 @@ const InstagramIcon = ({ className }: { className?: string }) => (
 );
 
 export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
+
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === '/';
@@ -65,6 +68,35 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const isAuthenticated = useAuthStore(
+    (state) => state.isAuthenticated
+  );
+  console.log("isAuthenticated:", isAuthenticated);
+
+  const clearAuth = useAuthStore(
+    (state) => state.clearAuth
+  );
+
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+
+      await logoutCustomer();
+
+      clearAuth();
+      setIsMenuOpen(false);
+
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Logout failed. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
   // Solid background after scrolling
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 40);
@@ -78,8 +110,8 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
     const sections = NAV_LINKS.filter((l) => l.href.startsWith('#'))
       .map((l) => document.querySelector(l.href))
       .filter(
-      (el): el is Element => el !== null
-    );
+        (el): el is Element => el !== null
+      );
     if (sections.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -124,11 +156,10 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        solid
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${solid
           ? 'border-b border-white/5 bg-[#0e0e10]/95 py-2.5 shadow-2xl backdrop-blur-md sm:py-3'
           : 'bg-transparent py-3 sm:py-5'
-      }`}
+        }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
@@ -145,7 +176,7 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
               width={280}
               height={100}
               priority
-              className="h-9 w-auto max-w-[220px] object-contain sm:h-11 lg:h-12"
+              className="h-9 w-auto max-w-55 object-contain sm:h-11 lg:h-12"
             />
           </a>
 
@@ -162,11 +193,10 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
                   href={resolveHref(link.href)}
                   onClick={() => setActiveNav(link.href)}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a880] xl:px-4 ${
-                    isActive
+                  className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a880] xl:px-4 ${isActive
                       ? 'bg-white font-semibold text-[#111113] shadow-md'
                       : 'text-[#d1d1d6] hover:bg-white/5 hover:text-white'
-                  }`}
+                    }`}
                 >
                   {link.name}
                 </Link>
@@ -188,6 +218,16 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
             </button>
 
             <CartButton />
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="rounded-full border border-white/20 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoggingOut ? "Logging out..." : "Logout"}
+              </button>
+            )}
 
             <div className="hidden items-center gap-1.5 text-[#b0b0b8] xl:flex">
               <a
@@ -219,6 +259,16 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
               Shop Now
             </button>
             <CartButton />
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="rounded-full border border-white/20 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoggingOut ? "Logging out..." : "Logout"}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setIsMenuOpen((open) => !open)}
@@ -255,11 +305,10 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
                     setIsMenuOpen(false);
                   }}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`rounded-lg px-3 py-3 text-base transition-colors ${
-                    isActive
+                  className={`rounded-lg px-3 py-3 text-base transition-colors ${isActive
                       ? 'bg-white/10 font-medium text-white'
                       : 'text-[#a1a1aa] hover:text-white'
-                  }`}
+                    }`}
                 >
                   {link.name}
                 </a>
@@ -278,6 +327,16 @@ export const Header: React.FC<HeaderProps> = ({ onShopNow }) => {
             Shop Now
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </button>
+          {isAuthenticated && (
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="rounded-full border border-white/20 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoggingOut ? "Logging out..." : "Logout"}
+              </button>
+            )}
 
           <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
             <a href={CONTACT.phoneHref} className="text-sm text-[#a1a1aa]">

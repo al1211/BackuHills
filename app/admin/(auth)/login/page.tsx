@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Icon } from "@tabler/icons-react";
+import { adminLogin } from "@/lib/auth/admin-auth";
+import { useAdminAuthStore } from "@/store/admin.auth.store";
 import {
   IconAlertCircle,
   IconArchive,
@@ -17,8 +19,6 @@ import {
 
 // DEMO login: ye details code me dikhti hain, to asli use ke liye hata dena.
 // Neeche submit() me TODO wali jagah par apna API call lagao.
-const DEMO = { email: "admin@backumhills.com", password: "admin123" };
-const SHOW_DEMO = process.env.NODE_ENV !== "production"; // demo hint sirf development me dikhta hai
 const REMEMBER_KEY = "bh_admin_email";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -43,7 +43,7 @@ export default function LoginPage() {
   const router = useRouter();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-
+   
   const [form, setForm] = useState({ email: "", password: "" });
   const [remember, setRemember] = useState(true);
   const [errors, setErrors] = useState<Errors>({});
@@ -51,6 +51,9 @@ export default function LoginPage() {
   const [show, setShow] = useState(false);
   const [capsOn, setCapsOn] = useState(false);
   const [loading, setLoading] = useState(false);
+
+
+  const setAdminAuth = useAdminAuthStore((state) => state.setAdminAuth);
 
   // Pichli baar yaad rakha hua email bhar do, aur sahi box par cursor rakho
   useEffect(() => {
@@ -74,43 +77,63 @@ export default function LoginPage() {
     setFormError("");
   };
 
-  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (loading) return;
+const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    const errs: Errors = {};
-    if (!EMAIL_RE.test(form.email.trim())) errs.email = "Sahi email likho, jaise name@example.com";
-    if (!form.password) errs.password = "Password likho.";
-    setErrors(errs);
-    if (errs.email) return emailRef.current?.focus();
-    if (errs.password) return passwordRef.current?.focus();
+  if (loading) return;
 
-    setLoading(true);
-    setFormError("");
+  const errs: Errors = {};
+
+  if (!EMAIL_RE.test(form.email.trim())) {
+    errs.email = "Sahi email likho, jaise name@example.com";
+  }
+
+  if (!form.password) {
+    errs.password = "Password likho.";
+  }
+
+  setErrors(errs);
+
+  if (errs.email) return emailRef.current?.focus();
+  if (errs.password) return passwordRef.current?.focus();
+
+  setLoading(true);
+  setFormError("");
+
+  try {
+    const { user, accessToken } = await adminLogin(
+      form.email.trim(),
+      form.password
+    );
+
+    // Admin details aur token Zustand store mein save karo.
+    setAdminAuth(user, accessToken);
+
+    // Sirf email remember karna hai, password nahi.
     try {
-      // TODO: yahan asli login lagao, jaise:
-      // const res = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
-      // if (res.ok) { router.push("/dashboard"); return; }
-      await new Promise((r) => setTimeout(r, 700)); // demo ke liye thoda wait
-      const ok = form.email.trim().toLowerCase() === DEMO.email && form.password === DEMO.password;
-      if (ok) {
-        try {
-          if (remember) localStorage.setItem(REMEMBER_KEY, form.email.trim());
-          else localStorage.removeItem(REMEMBER_KEY);
-        } catch {
-          /* storage band ho to chhod do */
-        }
-        router.push("/dashboard");
-        return; // loading true rehne do taaki dobara click na ho
+      if (remember) {
+        localStorage.setItem(REMEMBER_KEY, form.email.trim());
+      } else {
+        localStorage.removeItem(REMEMBER_KEY);
       }
-      setFormError("Email ya password galat hai. Dobara check karke try karo.");
-      setForm((f) => ({ ...f, password: "" }));
-      passwordRef.current?.focus();
     } catch {
-      setFormError("Server tak pahunch nahi paye. Internet check karke dobara try karo.");
+      // Storage unavailable ho toh login continue rahega.
     }
+
+    router.push("/dashboard");
+  } catch (error) {
+    setFormError(
+      error instanceof Error
+        ? error.message
+        : "Login failed. Dobara try karo."
+    );
+
+    setForm((f) => ({ ...f, password: "" }));
+    passwordRef.current?.focus();
+  } finally {
     setLoading(false);
-  };
+  }
+};
 
   const fieldClass = (err?: string) =>
     `h-12 w-full rounded-xl border bg-white pl-11 pr-4 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-4 ${
@@ -255,23 +278,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {SHOW_DEMO && (
-            <div className="mt-6 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-xs text-gray-500">
-              <p className="font-medium text-gray-600">Demo login (sirf development me dikhta hai)</p>
-              <p className="mt-1">{DEMO.email} · {DEMO.password}</p>
-              <button
-                type="button"
-                onClick={() => {
-                  setForm(DEMO);
-                  setErrors({});
-                  setFormError("");
-                }}
-                className="mt-2 font-semibold text-[#0F7A5C] hover:underline"
-              >
-                Bhar do
-              </button>
-            </div>
-          )}
+          
 
           <p className="mt-8 flex items-center justify-center gap-1.5 text-xs text-gray-400">
             <IconShieldCheck size={14} /> Sirf authorised staff ke liye

@@ -90,3 +90,8 @@ export interface ProcessStep {
   description: string;
   iconName: "Search" | "Scissors" | "Sparkles" | "PackageCheck";
 }
+
+export type AdminAuthState = {
+  accessToken: string | null;
+  // baaki properties...
+};

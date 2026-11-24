@@ -1,22 +1,39 @@
 "use client";
 // Ek hi file me poora customer register. Ise app/account/register/page.tsx me rakho.
 import { useState } from "react";
+import { registerCustomer } from "@/services/auth.services";
 import Link from "next/link";
 import { IconAlertCircle, IconCircleCheck, IconEye, IconEyeOff, IconLock, IconMail, IconPhone, IconUser, IconMapPin, IconTruckDelivery, IconBolt } from "@tabler/icons-react";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[6-9]\d{9}$/; // Indian mobile: 10 digit, 6-9 se shuru
 
-type Payload = { name: string; email: string; phone: string; password: string; newsletter: boolean };
+type Payload = { name: string; email: string; phone: string; password: string;};
 
-async function register(p: Payload): Promise<{ ok: boolean; field?: "email"; error?: string }> {
-  // TODO: const res = await fetch("/api/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(p) });
-  await new Promise((r) => setTimeout(r, 900));
-  if (p.email.toLowerCase() === "demo@backumhills.com") return { ok: false, field: "email", error: "Is email se account pehle se hai. Login karo." };
-  return { ok: true };
+async function register(
+  p: Payload
+): Promise<{ ok: boolean; field?: "email"; error?: string }> {
+  try {
+    await registerCustomer({
+      name: p.name,
+      email: p.email,
+      phone: p.phone,
+      password: p.password,
+    });
+
+    return { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.",
+    };
+  }
 }
 
-type Form = { name: string; email: string; phone: string; password: string; confirm: string; terms: boolean; newsletter: boolean };
+type Form = { name: string; email: string; phone: string; password: string;  terms: boolean; newsletter: boolean };
 type Field = "name" | "email" | "phone" | "password" | "confirm" | "terms";
 type Errors = Partial<Record<Field, string>>;
 const ORDER: Field[] = ["name", "email", "phone", "password", "confirm", "terms"];
@@ -28,7 +45,7 @@ function validate(f: Form): Errors {
   if (!PHONE_RE.test(f.phone)) e.phone = "10 digit ka mobile number likho (6, 7, 8 ya 9 se shuru).";
   if (f.password.length < 8) e.password = "Password kam se kam 8 characters ka ho.";
   else if (!/[A-Za-z]/.test(f.password) || !/\d/.test(f.password)) e.password = "Password me letter aur number dono hone chahiye.";
-  if (f.confirm !== f.password) e.confirm = "Dono password same likho.";
+
   if (!f.terms) e.terms = "Aage badhne ke liye shartein maanna zaroori hai.";
   return e;
 }
@@ -56,7 +73,7 @@ const field = (err?: string, left = "pl-11") =>
   }`;
 
 export default function RegisterPage() {
-  const [form, setForm] = useState<Form>({ name: "", email: "", phone: "", password: "", confirm: "", terms: false, newsletter: false });
+  const [form, setForm] = useState<Form>({ name: "", email: "", phone: "", password: "", terms: false, newsletter: false });
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState("");
   const [show, setShow] = useState(false);
@@ -79,7 +96,7 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      const res = await register({ name: form.name.trim(), email: form.email.trim(), phone: form.phone, password: form.password, newsletter: form.newsletter });
+      const res = await register({ name: form.name.trim(), email: form.email.trim(), phone: form.phone, password: form.password });
       if (res.ok) return setDone(true);
       if (res.field) {
         setErrors({ [res.field]: res.error });
@@ -165,7 +182,7 @@ export default function RegisterPage() {
                   <div className="relative"><Icon i={IconPhone} />
                     <span className="pointer-events-none absolute left-11 top-1/2 -translate-y-1/2 text-sm text-gray-500">+91</span>
                     <input id="phone" type="tel" inputMode="numeric" autoComplete="tel-national" maxLength={10} placeholder="98765 43210" value={form.phone}
-                      onChange={(e) => set("phone", e.target.value.replace(/\D/g, "").slice(0, 10))} aria-invalid={!!errors.phone} className={field(errors.phone, "pl-[4.5rem]")} />
+                      onChange={(e) => set("phone", e.target.value.replace(/\D/g, "").slice(0, 10))} aria-invalid={!!errors.phone} className={field(errors.phone, "pl-18")} />
                   </div>
                   {errors.phone ? <Err id="phone" /> : <p className="text-xs text-gray-400">Delivery ke liye zaroori hai.</p>}
                 </div>
@@ -186,14 +203,7 @@ export default function RegisterPage() {
                   {errors.password ? <Err id="password" /> : <p className="text-xs text-gray-500" aria-live="polite">{form.password ? `Password: ${LABELS[s]}` : "Letter aur number dono rakho."}</p>}
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="confirm" className="text-sm font-medium text-gray-700">Password dobara</label>
-                  <div className="relative"><Icon i={IconLock} />
-                    <input id="confirm" type={show ? "text" : "password"} autoComplete="new-password" placeholder="Wahi password dobara likho" value={form.confirm}
-                      onChange={(e) => set("confirm", e.target.value)} aria-invalid={!!errors.confirm} className={field(errors.confirm)} />
-                  </div><Err id="confirm" />
-                </div>
-
+               
                 <div className="flex flex-col gap-3 text-sm text-gray-600">
                   <div>
                     <label className="flex cursor-pointer items-start gap-2.5">
@@ -221,7 +231,7 @@ export default function RegisterPage() {
               </form>
 
               <p className="mt-6 text-center text-sm text-gray-600">
-                Pehle se account hai? <Link href="/account/login" className="font-semibold text-[#0F7A5C] hover:underline">Login karo</Link>
+                Pehle se account hai? <Link href="/login" className="font-semibold text-[#0F7A5C] hover:underline">Login karo</Link>
               </p>
             </>
           )}

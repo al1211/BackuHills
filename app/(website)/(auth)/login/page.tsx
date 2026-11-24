@@ -1,21 +1,48 @@
 "use client";
-// Ek hi file me poora customer login. Ise app/account/login/page.tsx me rakho.
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { loginCustomer, getAuthenticatedUser } from "@/services/auth.services";
 import { IconAlertCircle, IconEye, IconEyeOff, IconLock, IconMail, IconMapPin, IconTruckDelivery, IconBolt } from "@tabler/icons-react";
+import { useAuthStore } from "@/store/auth.store";
 
-// DEMO: asli login ke liye neeche login() me apna API lagao. Ye details production me mat rakhna.
-const DEMO = { email: "demo@backumhills.com", password: "Demo@1234" };
 const SHOW_DEMO = process.env.NODE_ENV !== "production";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-async function login(email: string, password: string): Promise<{ ok: boolean; error?: string }> {
-  // TODO: const res = await fetch("/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
-  await new Promise((r) => setTimeout(r, 700));
-  if (email.toLowerCase() === DEMO.email && password === DEMO.password) return { ok: true };
-  return { ok: false, error: "Email ya password galat hai. Dobara check karke try karo." };
+async function login(
+  email: string,
+  password: string
+) {
+  try {
+    // Step 1: Login API
+    const result = await loginCustomer({
+      email,
+      password,
+    });
+
+    // Step 2: Access token
+    const accessToken = result.accessToken;
+
+    // Step 3: Customer details
+    const customer = await getAuthenticatedUser(accessToken);
+
+    // Step 4: Return customer and token
+    return {
+      ok: true as const,
+      customer,
+      accessToken,
+    };
+  } catch (error) {
+    return {
+      ok: false as const,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Email ya password galat hai. Dobara try karo.",
+    };
+  }
 }
+
 
 const PERKS = [
   { icon: IconTruckDelivery, title: "Order track karo", text: "Har order ki delivery ka status ek jagah." },
@@ -31,6 +58,7 @@ export default function LoginPage() {
   const [show, setShow] = useState(false);
   const [capsOn, setCapsOn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const set = (k: "email" | "password") => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -51,10 +79,20 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const res = await login(form.email.trim(), form.password);
+
       if (res.ok) {
+        // Zustand store update
+        setAuth(res.customer, res.accessToken);
+
         const next = new URLSearchParams(window.location.search).get("next") ?? "";
-        router.push(next.startsWith("/") && !next.startsWith("//") ? next : "/account");
-        return; // loading true rehne do taaki dobara click na ho
+
+        router.push(
+          next.startsWith("/") && !next.startsWith("//")
+            ? next
+            : "/account"
+        );
+
+        return;
       }
       setFormError(res.error ?? "Login nahi ho paya.");
       setForm((f) => ({ ...f, password: "" }));
@@ -66,8 +104,7 @@ export default function LoginPage() {
   };
 
   const field = (err?: string) =>
-    `h-12 w-full rounded-xl border bg-white pl-11 pr-4 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-4 ${
-      err ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 hover:border-gray-300 focus:border-[#2FCB9F] focus:ring-[#5FE0BC]/25"
+    `h-12 w-full rounded-xl border bg-white pl-11 pr-4 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-4 ${err ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 hover:border-gray-300 focus:border-[#2FCB9F] focus:ring-[#5FE0BC]/25"
     }`;
 
   return (
@@ -151,16 +188,10 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600">
-            Naye ho? <Link href="/account/register" className="font-semibold text-[#0F7A5C] hover:underline">Account banao</Link>
+            New Customers? <Link href="/" className="font-semibold text-[#0F7A5C] hover:underline">Account banao</Link>
           </p>
 
-          {SHOW_DEMO && (
-            <div className="mt-6 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-xs text-gray-500">
-              <p className="font-medium text-gray-600">Demo login (sirf development me dikhta hai)</p>
-              <p className="mt-1">{DEMO.email} · {DEMO.password}</p>
-              <button type="button" onClick={() => { setForm(DEMO); setErrors({}); setFormError(""); }} className="mt-2 font-semibold text-[#0F7A5C] hover:underline">Bhar do</button>
-            </div>
-          )}
+
         </div>
       </section>
     </main>
