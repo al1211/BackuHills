@@ -1,8 +1,28 @@
-"use client";
-import { useMemo, useState } from "react";
-import { IconBox, IconStack2, IconAlertTriangle, IconCurrencyRupee, IconSearch, IconMinus, IconPlus } from "@tabler/icons-react";
+"use client"; import { useEffect, useMemo, useState } from "react";
+
+import {
+  IconBox,
+  IconStack2,
+  IconAlertTriangle,
+  IconCurrencyRupee,
+  IconSearch,
+  IconMinus,
+  IconPlus,
+} from "@tabler/icons-react";
+
 import StatCard from "../StatCard";
-import StockModal, { type InventoryItem, type StockUpdate } from "./StockModal";
+import StockModal, {
+  type InventoryItem,
+  type StockUpdate,
+} from "./StockModal";
+
+import {
+  getAdminInventory,
+  adjustInventoryStock,
+  updateLowStockThreshold,
+} from "@/services/inventory.service";
+
+import { useAdminAuthStore } from "@/store/admin.auth.store";
 
 type StockStatus = "out" | "low" | "ok";
 type StatusFilter = "all" | StockStatus;
@@ -22,8 +42,12 @@ const Badge = ({ p }: { p: InventoryItem }) => {
   return <span className={`whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${cls}`}>{text}</span>;
 };
 
-export default function InventoryManager({ initial }: { initial: InventoryItem[] }) {
-  const [items, setItems] = useState<InventoryItem[]>(initial);
+export default function InventoryManager() {
+  const [items, setItems] = useState<InventoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const accessToken = useAdminAuthStore((state) => state.accessToken);
   const [log, setLog] = useState<LogEntry[]>([]);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<StatusFilter>("all");
@@ -48,18 +72,144 @@ export default function InventoryManager({ initial }: { initial: InventoryItem[]
     [items, q, filter]
   );
 
-  // TODO: yahan API call lagao (PUT /api/inventory/:id) — abhi sirf page ki memory me badalta hai
-  const apply = ({ product, newStock, reason, reorderAt }: StockUpdate) => {
-    const change = newStock - product.stock;
-    setItems((prev) => prev.map((p) => (p.id === product.id ? { ...p, stock: newStock, reorderAt: reorderAt ?? p.reorderAt } : p)));
-    if (change !== 0) {
-      const time = new Date().toLocaleString("en-IN", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
-      setLog((prev) => [{ key: Date.now(), name: product.name, change, reason, time }, ...prev].slice(0, 8));
+  const fetchInventory = async () => {
+    if (!accessToken) {
+      setError("Admin authentication required.");
+      setLoading(false);
+      return;
     }
-    setAdjusting(null);
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await getAdminInventory(accessToken, 1, 100);
+
+      const formattedItems: InventoryItem[] = response.items.map((p) => ({
+        id: p.id,
+        name: p.name,
+        sku: p.sku,
+        price: p.pricePaise / 100,
+        stock: p.stock,
+        reorderAt: p.lowStockThreshold,
+      }));
+
+      setItems(formattedItems);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Inventory fetch failed"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
-  const quick = (p: InventoryItem, d: number) => {
-    if (p.stock + d >= 0) apply({ product: p, newStock: p.stock + d, reason: "Quick adjust" });
+
+  useEffect(() => {
+    fetchInventory();
+  }, [accessToken]);
+
+  // TODO: yahan API call lagao (PUT /api/inventory/:id) — abhi sirf page ki memory me badalta hai
+  const apply = async ({
+    product,
+    newStock,
+    reason,
+    reorderAt,
+  }: StockUpdate) => {
+    if (!accessToken) {
+      setError("Admin authentication required.");
+      return;
+    }
+
+    try {
+      setError("");
+
+      const change = newStock - product.stock;
+
+      // Stock increase/decrease
+      if (change !== 0) {
+        const reasonCodes: Record<string, string> = {
+          "Restock (naya maal aaya)": "PURCHASE",
+          "Offline sale": "SALE",
+          "Damaged / kharab": "DAMAGED",
+          "Customer return": "RETURN",
+          "Stock count correction": "ADJUSTMENT",
+        };
+
+        await adjustInventoryStock(
+          product.id,
+          {
+            type: change > 0 ? "IN" : "OUT",
+            quantity: Math.abs(change),
+            reason: reasonCodes[reason] || "ADJUSTMENT",
+            note: reason,
+          },
+          accessToken
+        );
+      }
+
+      // Update low-stock threshold
+      if (
+        reorderAt !== undefined &&
+        reorderAt !== product.reorderAt
+      ) {
+        await updateLowStockThreshold(
+          product.id,
+          reorderAt,
+          accessToken
+        );
+      }
+
+      const time = new Date().toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      if (change !== 0) {
+        setLog((prev) =>
+          [
+            {
+              key: Date.now(),
+              name: product.name,
+              change,
+              reason,
+              time,
+            },
+            ...prev,
+          ].slice(0, 8)
+        );
+      }
+
+      await fetchInventory();
+      setAdjusting(null);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Stock update failed"
+      );
+    }
+  };
+  const quick = async (p: InventoryItem, d: number) => {
+    if (p.stock + d < 0 || !accessToken) return;
+
+    try {
+      await adjustInventoryStock(
+        p.id,
+        {
+          type: d > 0 ? "IN" : "OUT",
+          quantity: Math.abs(d),
+          reason: d > 0 ? "PURCHASE" : "ADJUSTMENT",
+          note: "Quick stock adjustment",
+        },
+        accessToken
+      );
+
+      await fetchInventory();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Stock update failed"
+      );
+    }
   };
 
   const Stepper = ({ p }: { p: InventoryItem }) => (
@@ -76,7 +226,19 @@ export default function InventoryManager({ initial }: { initial: InventoryItem[]
   );
 
   return (
+
     <>
+      {loading && (
+        <div className="mt-5 rounded-xl bg-white p-6 text-center text-sm text-gray-500">
+          Loading inventory...
+        </div>
+      )}
+
+      {error && (
+        <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+          {error}
+        </div>
+      )}
       <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard title="Total products" period="SKUs" value={totals.skus} icon={IconBox} />
         <StatCard title="Total units" period="Sab products ka stock" value={totals.units.toLocaleString("en-IN")} icon={IconStack2} />
@@ -108,7 +270,7 @@ export default function InventoryManager({ initial }: { initial: InventoryItem[]
         </select>
       </div>
 
-      {shown.length === 0 ? (
+      {!loading && shown.length === 0 ? (
         <div className="mt-4 rounded-xl border border-gray-100 bg-white p-10 text-center text-sm text-gray-400">Koi product nahi mila.</div>
       ) : (
         <>

@@ -46,9 +46,9 @@ async function login(
 
 
 const PERKS = [
-  { icon: IconTruckDelivery, title: "Order track karo", text: "Har order ki delivery ka status ek jagah." },
-  { icon: IconMapPin, title: "Address save rakho", text: "Dobara order par address nahi bharna padega." },
-  { icon: IconBolt, title: "Tez checkout", text: "Kam steps me order, aur pichle orders ka record." },
+  { icon: IconTruckDelivery, title: " Track Your Orders ", text: "Stay updated on every delivery." },
+  { icon: IconMapPin, title: "Save Your Addresses", text: "No need to enter your address again for future orders." },
+  { icon: IconBolt, title: "Fast Checkout", text: "Complete your purchase in fewer steps and keep a record of your previous orders." },
 ];
 
 export default function LoginPage() {
@@ -94,7 +94,7 @@ export default function LoginPage() {
         router.push(
           next.startsWith("/") && !next.startsWith("//")
             ? next
-            : "/account"
+            : "/profile"
         );
 
         return;
@@ -144,7 +144,7 @@ export default function LoginPage() {
             <span className="font-bold text-gray-900">Backum Hills</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Welcome back</h1>
-          <p className="mt-2 text-sm text-gray-500">Apne account me login karo.</p>
+          <p className="mt-2 text-sm text-gray-500">Login to your account</p>
 
           <form onSubmit={submit} noValidate className="mt-8 flex flex-col gap-5">
             {formError && (
@@ -164,10 +164,7 @@ export default function LoginPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
-                <Link href="/account/forgot-password" className="text-xs font-medium text-[#0F7A5C] hover:underline">Password bhool gaye?</Link>
-              </div>
+              
               <div className="relative">
                 <IconLock size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input id="password" type={show ? "text" : "password"} autoComplete="current-password" value={form.password} onChange={set("password")}
@@ -178,8 +175,12 @@ export default function LoginPage() {
                   {show ? <IconEyeOff size={20} /> : <IconEye size={20} />}
                 </button>
               </div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
+                <Link href="/account/forgot-password" className="text-xs font-medium text-[#0F7A5C] hover:underline">Forgot Password?</Link>
+              </div>
               {errors.password && <p className="text-xs text-red-600" role="alert">{errors.password}</p>}
-              {capsOn && !errors.password && <p className="flex items-center gap-1.5 text-xs text-amber-700" role="status"><IconAlertCircle size={14} /> Caps Lock on hai.</p>}
+              {capsOn && !errors.password && <p className="flex items-center gap-1.5 text-xs text-amber-700" role="status"><IconAlertCircle size={14} />Caps Lock on</p>}
             </div>
 
             <button type="submit" disabled={loading}
@@ -190,12 +191,12 @@ export default function LoginPage() {
                   <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                 </svg>
               )}
-              {loading ? "Login ho raha hai..." : "Log in"}
+              {loading ? "Loading..." : "Log in"}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600">
-            New Customers? <Link href="/" className="font-semibold text-[#0F7A5C] hover:underline">Account banao</Link>
+            New Customers? <Link href="/register" className="font-semibold text-[#0F7A5C] hover:underline">Create an account</Link>
           </p>
 
 

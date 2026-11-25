@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { registerCustomer } from "@/services/auth.services";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { IconAlertCircle, IconCircleCheck, IconEye, IconEyeOff, IconLock, IconMail, IconPhone, IconUser, IconMapPin, IconTruckDelivery, IconBolt } from "@tabler/icons-react";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[6-9]\d{9}$/; // Indian mobile: 10 digit, 6-9 se shuru
 
-type Payload = { name: string; email: string; phone: string; password: string;};
+type Payload = { name: string; email: string; phone: string; password: string; };
 
 async function register(
   p: Payload
@@ -33,7 +34,7 @@ async function register(
   }
 }
 
-type Form = { name: string; email: string; phone: string; password: string;  terms: boolean; newsletter: boolean };
+type Form = { name: string; email: string; phone: string; password: string; terms: boolean; newsletter: boolean };
 type Field = "name" | "email" | "phone" | "password" | "confirm" | "terms";
 type Errors = Partial<Record<Field, string>>;
 const ORDER: Field[] = ["name", "email", "phone", "password", "confirm", "terms"];
@@ -62,14 +63,13 @@ const LABELS = ["", "Kamzor", "Theek hai", "Accha", "Bahut accha"];
 const COLORS = ["", "bg-red-400", "bg-amber-400", "bg-emerald-400", "bg-emerald-600"];
 
 const PERKS = [
-  { icon: IconTruckDelivery, title: "Order track karo", text: "Har order ki delivery ka status ek jagah." },
-  { icon: IconMapPin, title: "Address save rakho", text: "Dobara order par address nahi bharna padega." },
-  { icon: IconBolt, title: "Tez checkout", text: "Kam steps me order, aur pichle orders ka record." },
+  { icon: IconTruckDelivery, title: "Track Your Orders ", text: "Stay updated on every delivery." },
+  { icon: IconMapPin, title: "Save Your Addresses", text: "No need to enter your address again for future orders." },
+  { icon: IconBolt, title: "Fast Checkout", text: "Complete your purchase in fewer steps and keep a record of your previous orders." },
 ];
 
 const field = (err?: string, left = "pl-11") =>
-  `h-12 w-full rounded-xl border bg-white ${left} pr-4 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-4 ${
-    err ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 hover:border-gray-300 focus:border-[#2FCB9F] focus:ring-[#5FE0BC]/25"
+  `h-12 w-full rounded-xl border bg-white ${left} pr-4 text-sm text-gray-900 placeholder:text-gray-400 transition focus:outline-none focus:ring-4 ${err ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-gray-200 hover:border-gray-300 focus:border-[#2FCB9F] focus:ring-[#5FE0BC]/25"
   }`;
 
 export default function RegisterPage() {
@@ -80,15 +80,16 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
+  const router = useRouter();
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) => {
     setForm((f) => ({ ...f, [k]: v }));
     setErrors((p) => ({ ...p, [k]: undefined }));
     setFormError("");
   };
-   useEffect(() => {
-  setCurrentYear(new Date().getFullYear()); 
-}, []);
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -101,7 +102,10 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       const res = await register({ name: form.name.trim(), email: form.email.trim(), phone: form.phone, password: form.password });
-      if (res.ok) return setDone(true);
+      if (res.ok) {
+        router.push("/account/login");
+        return;
+      }
       if (res.field) {
         setErrors({ [res.field]: res.error });
         document.getElementById(res.field)?.focus();
@@ -126,7 +130,7 @@ export default function RegisterPage() {
           <span className="text-lg font-bold">Backum Hills</span>
         </div>
         <div className="relative max-w-md">
-          <h2 className="text-4xl font-bold leading-tight tracking-tight">Account banao, order karna aasaan.</h2>
+          <h2 className="text-4xl font-bold leading-tight tracking-tight">Your Shopping Experience, Simplified.</h2>
           <ul className="mt-10 flex flex-col gap-6">
             {PERKS.map(({ icon: I, title, text }) => (
               <li key={title} className="flex gap-4">
@@ -150,15 +154,15 @@ export default function RegisterPage() {
             <div className="flex flex-col items-center gap-5 rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-sm">
               <span className="grid h-14 w-14 place-items-center rounded-full bg-[#E3F8F1] text-[#0F7A5C]"><IconCircleCheck size={32} /></span>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Account ban gaya!</h1>
-                <p className="mt-1 text-sm text-gray-500">{form.name.trim().split(" ")[0]}, Backum Hills me aapka swagat hai.</p>
+                <h1 className="text-xl font-bold text-gray-900">Account Created!</h1>
+                <p className="mt-1 text-sm text-gray-500">{form.name.trim().split(" ")[0]}, Welcome to Backum Hills.</p>
               </div>
-              <Link href="/account/login" className="flex h-12 w-full items-center justify-center rounded-xl bg-[#5FE0BC] text-sm font-semibold text-gray-900 shadow-md shadow-[#5FE0BC]/40 hover:bg-[#4fd3ae]">Login karo</Link>
+              <Link href="/account/login" className="flex h-12 w-full items-center justify-center rounded-xl bg-[#5FE0BC] text-sm font-semibold text-gray-900 shadow-md shadow-[#5FE0BC]/40 hover:bg-[#4fd3ae]">Login</Link>
             </div>
           ) : (
             <>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Account banao</h1>
-              <p className="mt-2 text-sm text-gray-500">Kuch hi seconds me account ready.</p>
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Create Your Account</h1>
+              <p className="mt-2 text-sm text-gray-500">Join Backum Hills and enjoy a seamless shopping experience.</p>
 
               <form onSubmit={submit} noValidate className="mt-8 flex flex-col gap-5">
                 {formError && (
@@ -168,7 +172,7 @@ export default function RegisterPage() {
                 )}
 
                 <div className="flex flex-col gap-1.5">
-                  <label htmlFor="name" className="text-sm font-medium text-gray-700">Poora naam</label>
+                  <label htmlFor="name" className="text-sm font-medium text-gray-700">Full Name</label>
                   <div className="relative"><Icon i={IconUser} />
                     <input id="name" autoFocus autoComplete="name" placeholder="Rohit Sharma" value={form.name} onChange={(e) => set("name", e.target.value)} aria-invalid={!!errors.name} className={field(errors.name)} />
                   </div><Err id="name" />
@@ -207,18 +211,18 @@ export default function RegisterPage() {
                   {errors.password ? <Err id="password" /> : <p className="text-xs text-gray-500" aria-live="polite">{form.password ? `Password: ${LABELS[s]}` : "Letter aur number dono rakho."}</p>}
                 </div>
 
-               
+
                 <div className="flex flex-col gap-3 text-sm text-gray-600">
                   <div>
                     <label className="flex cursor-pointer items-start gap-2.5">
                       <input id="terms" type="checkbox" checked={form.terms} onChange={(e) => set("terms", e.target.checked)} aria-invalid={!!errors.terms} className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#2FCB9F]" />
-                      <span>Main <Link href="/terms" className="font-medium text-[#0F7A5C] hover:underline">Terms & Conditions</Link> aur <Link href="/privacy" className="font-medium text-[#0F7A5C] hover:underline">Privacy Policy</Link> se sehmat hoon.</span>
+                      <span>I agree to the <Link href="/terms" className="font-medium text-[#0F7A5C] hover:underline">Terms & Conditions</Link> and <Link href="/privacy" className="font-medium text-[#0F7A5C] hover:underline">Privacy Policy</Link>.</span>
                     </label>
                     {errors.terms && <p className="mt-1 text-xs text-red-600" role="alert">{errors.terms}</p>}
                   </div>
                   <label className="flex cursor-pointer items-start gap-2.5">
                     <input type="checkbox" checked={form.newsletter} onChange={(e) => set("newsletter", e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#2FCB9F]" />
-                    <span>Mujhe naye products aur offers ki email bhejo (optional).</span>
+                    <span>Send me emails about new products and offers (optional).</span>
                   </label>
                 </div>
 
@@ -230,12 +234,12 @@ export default function RegisterPage() {
                       <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
                     </svg>
                   )}
-                  {loading ? "Account ban raha hai..." : "Account banao"}
+                  {loading ? "Loading..." : "Create Account"}
                 </button>
               </form>
 
               <p className="mt-6 text-center text-sm text-gray-600">
-                Pehle se account hai? <Link href="/login" className="font-semibold text-[#0F7A5C] hover:underline">Login karo</Link>
+                already have an account? <Link href="/login" className="font-semibold text-[#0F7A5C] hover:underline">Login </Link>
               </p>
             </>
           )}

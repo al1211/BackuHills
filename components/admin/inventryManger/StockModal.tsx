@@ -4,7 +4,7 @@ import { IconX } from "@tabler/icons-react";
 
 // Types yahin define hain; InventoryManager yahin se import karta hai.
 export type InventoryItem = {
-  id: number;
+  id: string;
   name: string;
   sku: string;
   price: number;
